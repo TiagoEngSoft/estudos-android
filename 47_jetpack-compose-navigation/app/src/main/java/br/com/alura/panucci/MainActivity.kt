@@ -30,6 +30,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            //Para ver as rotas empilhadas
             val navController = rememberNavController()
             LaunchedEffect(Unit) {
                 navController.addOnDestinationChangedListener { _, _, _ ->
@@ -39,13 +41,17 @@ class MainActivity : ComponentActivity() {
                     Log.i("MainActivity", "onCreate: back stack - $routes")
                 }
             }
+
+            //Monitoramento da pilha de rotas
             val backStackEntryState by navController.currentBackStackEntryAsState()
             val currentDestination = backStackEntryState?.destination
+
             PanucciTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    // Icone selecionado da botton bar
                     val selectedItem by remember(currentDestination) {
                         val item = currentDestination?.let { destination ->
                             bottomAppBarItems.find {
@@ -54,11 +60,15 @@ class MainActivity : ComponentActivity() {
                         } ?: bottomAppBarItems.first()
                         mutableStateOf(item)
                     }
+
+                    //Mostra appbar e topbar para rotas do bottonbar
                     val containsInBottomAppBarItems = currentDestination?.let { destination ->
                         bottomAppBarItems.find {
                             it.destination.route == destination.route
                         }
                     } != null
+
+                    //Rotas que mostraram o Float Action Button
                     val isShowFab = when (currentDestination?.route) {
                         AppDestination.Menu.route,
                         AppDestination.Drinks.route -> true
